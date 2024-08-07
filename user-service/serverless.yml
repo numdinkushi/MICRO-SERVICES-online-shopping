@@ -1,0 +1,20 @@
+service: user-service
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  signup:
+    handler: app/handler.signup
+    events:
+      - httpApi:
+          path: /signup
+          method: get
+
+plugins:
+  - serverless-offline
+
+custom:
+  esbuild:
+    enabled: false
