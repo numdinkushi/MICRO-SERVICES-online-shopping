@@ -1,6 +1,6 @@
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 
-export const signup =  async (event: APIGatewayProxyEventV2) => {
+export const Signup =  async (event: APIGatewayProxyEventV2) => {
     console.log(888, event);
 
     return {

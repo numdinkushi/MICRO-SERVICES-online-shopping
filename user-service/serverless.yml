@@ -6,12 +6,12 @@ provider:
 
 functions:
   signup:
-    handler: app/handler.signup
+    handler: app/handler.Signup
     events:
       - httpApi:
           path: /signup
           method: get
-
+ 
 plugins:
   - serverless-offline
 
