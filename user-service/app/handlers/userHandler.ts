@@ -8,18 +8,27 @@ import 'app/utils/dependencyInjection';
 
 const service = container.resolve(UserService);
 
-
 export const Signup = middy((event: APIGatewayProxyEventV2) => {
     return service.CreateUser(event);
 }).use(jsonBodyParser());
 
 
-export const Login = async (event: APIGatewayProxyEventV2) => {
+export const Login = middy((event: APIGatewayProxyEventV2) => {
     return service.UserLogin(event);
-};
+}).use(jsonBodyParser());
 
 export const Verify = async (event: APIGatewayProxyEventV2) => {
-    return service.VerifyUser(event);
+    const httpMethod = event.requestContext.http.method.toLocaleLowerCase();
+
+    if (httpMethod === 'post') {
+        return service.VerifyUser(event);
+    }
+
+    if (httpMethod === 'get') {
+        return service.GetVerificationToken(event);
+    }
+
+    return ErrorResponse(404, 'Request method not supported');
 };
 
 export const Profile = async (event: APIGatewayProxyEventV2) => {
