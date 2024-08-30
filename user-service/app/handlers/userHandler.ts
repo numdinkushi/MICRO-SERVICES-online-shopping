@@ -1,7 +1,6 @@
 import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import { UserService } from "app/service/userService";
-import { ErrorResponse } from "app/utils/response";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { container } from "tsyringe";
 import 'app/utils/dependencyInjection';
@@ -17,7 +16,7 @@ export const Login = middy((event: APIGatewayProxyEventV2) => {
     return service.UserLogin(event);
 }).use(jsonBodyParser());
 
-export const Verify = async (event: APIGatewayProxyEventV2) => {
+export const Verify = middy((event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLocaleLowerCase();
 
     if (httpMethod === 'post') {
@@ -28,10 +27,10 @@ export const Verify = async (event: APIGatewayProxyEventV2) => {
         return service.GetVerificationToken(event);
     }
 
-    return ErrorResponse(404, 'Request method not supported');
-};
+    return service.ResponseWithError(event);
+}).use(jsonBodyParser());
 
-export const Profile = async (event: APIGatewayProxyEventV2) => {
+export const Profile = middy((event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLocaleLowerCase();
 
     if (httpMethod === 'post') {
@@ -46,10 +45,10 @@ export const Profile = async (event: APIGatewayProxyEventV2) => {
         return service.GetProfile(event);
     }
 
-    return ErrorResponse(404, 'Request method not supported');
-};
+    return service.ResponseWithError(event);
+}).use(jsonBodyParser());
 
-export const Cart = async (event: APIGatewayProxyEventV2) => {
+export const Cart = middy((event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLocaleLowerCase();
 
     if (httpMethod === 'post') {
@@ -64,11 +63,10 @@ export const Cart = async (event: APIGatewayProxyEventV2) => {
         return service.GetCart(event);
     }
 
-    return ErrorResponse(404, 'Request method not supported');
+    return service.ResponseWithError(event);
+}).use(jsonBodyParser());
 
-};
-
-export const Payment = async (event: APIGatewayProxyEventV2) => {
+export const Payment = middy((event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLocaleLowerCase();
 
     if (httpMethod === 'post') {
@@ -83,5 +81,5 @@ export const Payment = async (event: APIGatewayProxyEventV2) => {
         return service.GetPayment(event);
     }
 
-    return ErrorResponse(404, 'Request method not supported');
-};
+    return service.ResponseWithError(event);
+}).use(jsonBodyParser());
